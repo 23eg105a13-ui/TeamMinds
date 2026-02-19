@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
+/* Basic setup */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+code, .font-mono {
+    font-family: 'Fira Code', monospace;
+}
+
+/* Custom Scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 3px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #4B5563;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.issue-card {
+    transition: all 0.2s ease;
+}
+.issue-card:hover {
+    transform: translateX(4px);
+}
+
+/* Tab Active State */
+.tab-btn.active {
+    color: #fff;
+    border-color: #6366F1;
+}
+
+/* Glow Effects */
+.glow-text {
+    text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+}
+
+#console-output {
+    color: #e5e7eb;
+}
+.console-error {
+    color: #ef4444;
+}
+.console-success {
+    color: #22c55e;
+}

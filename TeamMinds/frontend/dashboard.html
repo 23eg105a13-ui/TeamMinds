@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeWorks | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-[#0B0F1A] text-gray-300 font-inter h-screen flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="h-16 bg-[#111827] border-b border-gray-800 flex items-center justify-between px-6 shrink-0 z-20">
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="flex items-center space-x-2 group">
+                <i class="fas fa-code-branch text-indigo-500 text-xl group-hover:text-white transition"></i>
+                <span class="text-lg font-bold text-white tracking-wide">CodeRevX</span>
+            </a>
+            <div class="h-6 w-px bg-gray-700 mx-2"></div>
+            <div class="flex space-x-2">
+                <select id="language-select"
+                    class="bg-gray-800 border border-gray-700 text-xs rounded px-2 py-1 focus:ring-1 focus:ring-indigo-500 outline-none">
+                    <option value="python">Python</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button id="history-btn" class="p-2 text-gray-400 hover:text-white transition" title="History">
+                <i class="fas fa-history"></i>
+            </button>
+            <button id="github-btn" class="p-2 text-gray-400 hover:text-white transition" title="GitHub Integration">
+                <i class="fab fa-github"></i>
+            </button>
+            <div
+                class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs ring-2 ring-gray-800">
+                JD
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex overflow-hidden">
+
+        <!-- Left Panel: Editor -->
+        <div class="w-1/2 flex flex-col border-r border-gray-800 relative bg-[#0B0F1A]">
+            <!-- Toolbar -->
+            <div class="h-10 bg-[#111827] border-b border-gray-800 flex items-center justify-between px-4 shrink-0">
+                <span class="text-xs font-mono text-gray-500">INPUT CODE</span>
+                <div class="flex space-x-3 text-xs">
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <input type="checkbox" checked
+                            class="form-checkbox h-3 w-3 text-indigo-600 rounded focus:ring-0 bg-gray-800 border-gray-600">
+                        <span>Bugs</span>
+                    </label>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <input type="checkbox" checked
+                            class="form-checkbox h-3 w-3 text-indigo-600 rounded focus:ring-0 bg-gray-800 border-gray-600">
+                        <span>Security</span>
+                    </label>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <input type="checkbox" checked
+                            class="form-checkbox h-3 w-3 text-indigo-600 rounded focus:ring-0 bg-gray-800 border-gray-600">
+                        <span>Performance</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Editor Area -->
+            <div class="flex-1 relative group">
+                <textarea id="code-editor"
+                    class="w-full h-full bg-[#0B0F1A] text-gray-300 font-mono text-sm p-4 outline-none resize-none"
+                    placeholder="Paste your code here..." spellcheck="false"></textarea>
+
+                <!-- Floating Action Button -->
+                <div class="absolute bottom-6 right-6 flex flex-col space-y-3">
+                    <button id="execute-btn"
+                        class="w-12 h-12 rounded-full bg-gray-700 hover:bg-gray-600 text-white shadow-lg flex items-center justify-center transition hover:scale-105"
+                        title="Run Code">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="review-btn"
+                        class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-full shadow-lg font-semibold flex items-center space-x-2 transition transform hover:scale-105">
+                        <i class="fas fa-magic"></i>
+                        <span>AI Review</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Results -->
+        <div class="w-1/2 flex flex-col bg-[#111827] relative">
+            <!-- Tabs -->
+            <div class="h-10 border-b border-gray-800 flex shrink-0">
+                <button class="tab-btn active px-6 text-sm font-medium border-b-2 border-indigo-500 text-white"
+                    data-tab="review">Review</button>
+                <button
+                    class="tab-btn px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-300"
+                    data-tab="rewrite">Rewrite</button>
+                <button
+                    class="tab-btn px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-300"
+                    data-tab="tests">Tests</button>
+                <button
+                    class="tab-btn px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-300"
+                    data-tab="console">Console</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
+                id="results-container">
+
+                <!-- Initial State -->
+                <div id="initial-state"
+                    class="h-full flex flex-col items-center justify-center text-gray-600 opacity-50">
+                    <i class="fas fa-robot text-6xl mb-4"></i>
+                    <p class="text-lg">Waiting for code analysis...</p>
+                </div>
+
+                <!-- Review Tab Content -->
+                <div id="review-content" class="hidden space-y-6">
+                    <!-- Summary Card -->
+                    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 shadow-sm">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-2">Analysis Summary</h3>
+                        <p id="review-summary" class="text-gray-300 text-sm leading-relaxed"></p>
+                        <div class="mt-3 flex items-center space-x-2">
+                            <span class="text-xs text-gray-500">Confidence Score:</span>
+                            <div class="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div id="confidence-bar" class="h-full bg-green-500" style="width: 0%"></div>
+                            </div>
+                            <span id="confidence-text" class="text-xs font-bold text-green-400">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Issues List -->
+                    <div id="issues-list" class="space-y-4">
+                        <!-- Issues will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Rewrite Tab Content -->
+                <div id="rewrite-content" class="hidden flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-white">Optimized Code</h3>
+                        <div class="text-sm text-green-400 font-mono" id="perf-improvement"></div>
+                    </div>
+                    <div class="relative flex-1 bg-[#0B0F1A] rounded-lg border border-gray-700 overflow-hidden">
+                        <pre><code id="rewritten-code" class="language-python h-full p-4 overflow-auto block"></code></pre>
+                        <button
+                            class="absolute top-2 right-2 p-2 bg-gray-800 rounded hover:bg-gray-700 text-gray-400 hover:text-white transition"
+                            title="Copy">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tests Tab Content -->
+                <div id="tests-content" class="hidden flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-white">Generated Tests</h3>
+                        <button id="run-tests-btn"
+                            class="px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-sm transition">
+                            <i class="fas fa-play mr-1"></i> Run Tests
+                        </button>
+                    </div>
+                    <div class="relative flex-1 bg-[#0B0F1A] rounded-lg border border-gray-700 overflow-hidden">
+                        <pre><code id="test-code" class="language-python h-full p-4 overflow-auto block"></code></pre>
+                    </div>
+                </div>
+
+                <!-- Console Tab Content -->
+                <div id="console-content" class="hidden h-full flex flex-col">
+                    <div class="bg-[#000] rounded-lg h-full p-4 font-mono text-sm overflow-auto border border-gray-700">
+                        <div class="text-green-500 mb-2">$ system ready...</div>
+                        <div id="console-output" class="whitespace-pre-wrap"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay"
+        class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="text-center">
+            <div
+                class="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4">
+            </div>
+            <p class="text-xl font-semibold text-white animate-pulse">Analyzing Code...</p>
+            <p class="text-sm text-gray-400 mt-2">Consulting Llama 3.3 70B</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
