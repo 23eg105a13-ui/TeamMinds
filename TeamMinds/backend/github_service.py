@@ -15,11 +15,13 @@ async def analyze_github(request: GitHubRequest):
     if not api_key:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not set")
     
-    parts = request.repo_url.rstrip("/").split("/")
-    if len(parts) < 5:
-        raise HTTPException(status_code=400, detail="Invalid GitHub URL")
+    import re
+    # Match owner and repo from various GitHub URL formats
+    match = re.search(r"github\.com/([^/]+)/([^/]+)", request.repo_url)
+    if not match:
+        raise HTTPException(status_code=400, detail="Invalid GitHub URL. Must contain owner/repo.")
         
-    owner, repo = parts[-2], parts[-1]
+    owner, repo = match.group(1), match.group(2)
     contents_url = f"https://api.github.com/repos/{owner}/{repo}/contents"
     readme_url = f"https://api.github.com/repos/{owner}/{repo}/readme"
     
