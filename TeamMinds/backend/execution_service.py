@@ -8,7 +8,7 @@ import shutil
 
 execution_router = APIRouter()
 
-@execution_router.post("/", response_model=ExecResponse)
+@execution_router.post("", response_model=ExecResponse)
 async def execute_code(request: ExecRequest):
     lang = request.language.lower()
     

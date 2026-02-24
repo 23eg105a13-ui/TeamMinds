@@ -9,7 +9,7 @@ import shutil
 
 validation_router = APIRouter()
 
-@validation_router.post("/", response_model=ValidationResponse)
+@validation_router.post("")
 async def validate_code(request: CodeRequest):
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:

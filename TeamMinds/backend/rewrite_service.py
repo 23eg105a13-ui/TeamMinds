@@ -8,7 +8,7 @@ import json
 
 rewrite_router = APIRouter()
 
-@rewrite_router.post("/", response_model=RewriteResponse)
+@rewrite_router.post("")
 async def rewrite_code(request: CodeRequest, db: Session = Depends(get_db)):
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:

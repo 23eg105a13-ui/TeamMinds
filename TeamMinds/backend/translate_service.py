@@ -11,7 +11,7 @@ class TranslationRequest(BaseModel):
     from_lang: str
     to_lang: str
 
-@translate_router.post("/")
+@translate_router.post("")
 async def translate_code(request: TranslationRequest):
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:

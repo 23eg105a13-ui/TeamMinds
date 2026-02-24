@@ -6,7 +6,7 @@ import json
 
 test_router = APIRouter()
 
-@test_router.post("/")
+@test_router.post("")
 async def generate_tests(request: CodeRequest):
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:

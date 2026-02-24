@@ -9,7 +9,7 @@ import random
 
 review_router = APIRouter()
 
-@review_router.post("/", response_model=ReviewResponse)
+@review_router.post("")
 async def review_code(request: CodeRequest, db: Session = Depends(get_db)):
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:

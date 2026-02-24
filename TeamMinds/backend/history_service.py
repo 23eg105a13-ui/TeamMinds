@@ -8,7 +8,7 @@ import json
 
 history_router = APIRouter()
 
-@history_router.get("/", response_model=List[AnalysisHistoryItem])
+@history_router.get("")
 def get_history(db: Session = Depends(get_db)):
     # Fetch latest 20 analyses
     analyses = db.query(Analysis).order_by(Analysis.timestamp.desc()).limit(20).all()
