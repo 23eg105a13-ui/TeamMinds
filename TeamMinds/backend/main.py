@@ -7,8 +7,9 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load environment variables (only in local development)
+if not os.getenv("RENDER"):
+    load_dotenv()
 
 # Check for API Key
 if not os.getenv("OPENAI_API_KEY"):

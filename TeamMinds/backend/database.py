@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+if not os.getenv("RENDER"):
+    load_dotenv()
 
 # Use DATABASE_URL from environment (Render) or fallback to local SQLite
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./codeworks.db")
