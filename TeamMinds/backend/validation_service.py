@@ -1,6 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from models import CodeRequest, ValidationResponse, ValidationTestResult
 import google.generativeai as genai
+import os
+import json
+import subprocess
+import tempfile
+import shutil
 
 validation_router = APIRouter()
 
