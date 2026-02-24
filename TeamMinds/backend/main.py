@@ -7,11 +7,13 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Load environment variables (only if not on Render)
-if not os.getenv("RENDER") and os.path.exists("backend/.env"):
-    load_dotenv("backend/.env")
-elif not os.getenv("RENDER") and os.path.exists(".env"):
-    load_dotenv(".env")
+# Load environment variables ONLY locally
+if not os.getenv("RENDER"):
+    # Try both current dir and backend/ dir
+    if os.path.exists(".env"):
+        load_dotenv(".env")
+    elif os.path.exists("backend/.env"):
+        load_dotenv("backend/.env")
 
 # Check for API Key
 if not os.getenv("OPENAI_API_KEY"):
@@ -41,7 +43,14 @@ logger = logging.getLogger(__name__)
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "api_key_set": bool(os.getenv("OPENAI_API_KEY"))}
+    key = os.getenv("OPENAI_API_KEY", "")
+    masked = f"{key[:7]}...{key[-4:]}" if len(key) > 10 else "NOT_SET"
+    return {
+        "status": "ok", 
+        "api_key_set": bool(key), 
+        "masked_key": masked,
+        "env": "production" if os.getenv("RENDER") else "development"
+    }
 
 # Services
 from review_service import review_router

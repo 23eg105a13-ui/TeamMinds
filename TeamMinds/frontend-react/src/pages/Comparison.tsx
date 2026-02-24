@@ -10,7 +10,7 @@ import { Button, GlassCard } from '../components/ui/Core';
 import CodeEditor from '../components/CodeEditor';
 import { ValidationResult, Severity } from '../types/index';
 
-const API_BASE = "/api";
+const API_BASE = (import.meta as any).env?.VITE_API_URL || "/api";
 
 const ComparisonPage = () => {
     const [searchParams] = useSearchParams();
