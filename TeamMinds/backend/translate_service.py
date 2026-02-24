@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from openai import OpenAI
-import os
-import json
+import google.generativeai as genai
 
 translate_router = APIRouter()
 
@@ -13,11 +11,12 @@ class TranslationRequest(BaseModel):
 
 @translate_router.post("")
 async def translate_code(request: TranslationRequest):
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY not set")
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY not set")
 
-    client = OpenAI(api_key=api_key)
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
     
     prompt = f"""
     Translate the following code from {request.from_lang} to {request.to_lang}.
@@ -28,16 +27,16 @@ async def translate_code(request: TranslationRequest):
     """
 
     try:
-        completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="gpt-4o",
-            temperature=0.1
-        )
+        response = model.generate_content(prompt)
+        translated_code = response.text.strip()
         
-        translated_code = completion.choices[0].message.content.strip()
         # Clean markdown if LLM includes it
         if translated_code.startswith("```"):
-            translated_code = "\n".join(translated_code.split("\n")[1:-1])
+            lines = translated_code.split("\n")
+            if len(lines) > 2:
+                translated_code = "\n".join(lines[1:-1])
+            else:
+                translated_code = ""
             
         return {"translated_code": translated_code}
 

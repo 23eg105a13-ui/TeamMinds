@@ -11,18 +11,18 @@ from dotenv import load_dotenv
 if not os.getenv("RENDER"):
     load_dotenv(override=False)
 
-# Diagnostic print on startup (viewable in Render logs)
-_key = os.getenv("OPENAI_API_KEY", "")
-_masked = f"{_key[:7]}...{_key[-4:]}" if len(_key) > 10 else "NOT_SET"
-print(f"DEBUG: Active OpenAI Key Suffix: {_masked}")
-
-# Check for API Key
-if not os.getenv("OPENAI_API_KEY"):
+# Check for Gemini API Key
+if not os.getenv("GEMINI_API_KEY"):
     print("\n" + "="*50)
-    print("WARNING: OPENAI_API_KEY is not set in .env file!")
+    print("WARNING: GEMINI_API_KEY is not set!")
     print("AI features (Review, Rewrite, Test) will NOT work.")
-    print("Please set it in backend/.env")
+    print("Please set it in your environment/dashboard.")
     print("="*50 + "\n")
+
+# Diagnostic print on startup (viewable in Render logs)
+_key = os.getenv("GEMINI_API_KEY", "")
+_masked = f"{_key[:7]}...{_key[-4:]}" if len(_key) > 10 else "NOT_SET"
+print(f"DEBUG: Active Gemini Key Suffix: {_masked}")
 
 # Initialize DB
 models.Base.metadata.create_all(bind=engine)
@@ -44,11 +44,11 @@ logger = logging.getLogger(__name__)
 
 @app.get("/api/health")
 async def health_check():
-    key = os.getenv("OPENAI_API_KEY", "")
+    key = os.getenv("GEMINI_API_KEY", "")
     masked = f"{key[:7]}...{key[-4:]}" if len(key) > 10 else "NOT_SET"
     return {
         "status": "ok", 
-        "api_key_set": bool(key), 
+        "gemini_api_key_set": bool(key), 
         "masked_key": masked,
         "env": "production" if os.getenv("RENDER") else "development"
     }

@@ -3,18 +3,19 @@ from models import CodeRequest, RewriteResponse, Analysis
 from database import get_db
 from sqlalchemy.orm import Session
 import os
-from openai import OpenAI
+import google.generativeai as genai
 import json
 
 rewrite_router = APIRouter()
 
 @rewrite_router.post("")
 async def rewrite_code(request: CodeRequest, db: Session = Depends(get_db)):
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY environment variable not set.")
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY environment variable not set.")
 
-    client = OpenAI(api_key=api_key)
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
     
     prompt = f"""
     Rewrite and optimize the following {request.language} code.
@@ -35,16 +36,14 @@ async def rewrite_code(request: CodeRequest, db: Session = Depends(get_db)):
     """
 
     try:
-        chat_completion = client.chat.completions.create(
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            model="gpt-4o",
-            temperature=0.1,
-            response_format={"type": "json_object"},
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+            ),
         )
         
-        result_json = chat_completion.choices[0].message.content
+        result_json = response.text
         data = json.loads(result_json)
         
         # Save to DB

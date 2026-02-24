@@ -1,21 +1,21 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models import CodeRequest, ReviewResponse, Analysis
-from openai import OpenAI
+import google.generativeai as genai
 import os
 import json
 from database import get_db
 from sqlalchemy.orm import Session
-import random
 
 review_router = APIRouter()
 
 @review_router.post("")
 async def review_code(request: CodeRequest, db: Session = Depends(get_db)):
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY not set")
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY not set")
 
-    client = OpenAI(api_key=api_key)
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
     
     prompt = f"""
     Analyze this {request.language} code. 
@@ -40,13 +40,13 @@ async def review_code(request: CodeRequest, db: Session = Depends(get_db)):
     """
 
     try:
-        completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="gpt-4o",
-            response_format={"type": "json_object"}
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+            ),
         )
-        
-        data = json.loads(completion.choices[0].message.content)
+        data = json.loads(response.text)
         
         # Save to DB
         analysis = Analysis(

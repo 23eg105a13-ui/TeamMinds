@@ -4,16 +4,16 @@ import httpx
 import os
 import random
 import json
-from openai import OpenAI
 import base64
+import google.generativeai as genai
 
 github_router = APIRouter()
 
 @github_router.post("/analyze", response_model=GitHubAnalysisResponse)
 async def analyze_github(request: GitHubRequest):
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY not set")
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY not set")
     
     import re
     # Match owner and repo from various GitHub URL formats
@@ -50,7 +50,8 @@ async def analyze_github(request: GitHubRequest):
                 readme_content = base64.b64decode(readme_data["content"]).decode("utf-8")
         
         # LLM Analysis
-        openai_client = OpenAI(api_key=api_key)
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash")
         
         prompt = f"""
         Analyze this GitHub repository: {request.repo_url}
@@ -73,13 +74,14 @@ async def analyze_github(request: GitHubRequest):
         """
         
         try:
-            completion = openai_client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
-                model="gpt-4o",
-                response_format={"type": "json_object"}
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    response_mime_type="application/json",
+                ),
             )
             
-            analysis_data = json.loads(completion.choices[0].message.content)
+            analysis_data = json.loads(response.text)
             
             return {
                 "health": analysis_data.get("health_score", 80),

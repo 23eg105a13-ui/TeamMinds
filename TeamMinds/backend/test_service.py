@@ -1,18 +1,17 @@
 from fastapi import APIRouter, HTTPException
 from models import CodeRequest
-from openai import OpenAI
-import os
-import json
+import google.generativeai as genai
 
 test_router = APIRouter()
 
 @test_router.post("")
 async def generate_tests(request: CodeRequest):
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY not set")
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY not set")
     
-    client = OpenAI(api_key=api_key)
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
     
     prompt = f"""
     Generate 5 comprehensive unit tests for the following {request.language} code.
@@ -29,11 +28,12 @@ async def generate_tests(request: CodeRequest):
     """
     
     try:
-        completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="gpt-4o",
-            response_format={"type": "json_object"}
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+            ),
         )
-        return json.loads(completion.choices[0].message.content)
+        return json.loads(response.text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
