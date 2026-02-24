@@ -7,13 +7,15 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Load environment variables ONLY locally
-if not os.getenv("RENDER"):
-    # Try both current dir and backend/ dir
-    if os.path.exists(".env"):
-        load_dotenv(".env")
-    elif os.path.exists("backend/.env"):
-        load_dotenv("backend/.env")
+# Load environment variables only if not already set (Dashboard takes priority)
+if not os.getenv("OPENAI_API_KEY"):
+    load_dotenv()
+    # Try backup paths if default load_dotenv fails
+    if not os.getenv("OPENAI_API_KEY"):
+        if os.path.exists(".env"):
+            load_dotenv(".env")
+        elif os.path.exists("backend/.env"):
+            load_dotenv("backend/.env")
 
 # Check for API Key
 if not os.getenv("OPENAI_API_KEY"):
