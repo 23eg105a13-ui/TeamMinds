@@ -7,9 +7,9 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Load environment variables (override=False ensures Dashboard always wins)
-# We only load .env for local development where variables aren't set in a dashboard
-load_dotenv(override=False)
+# Load environment variables (NEVER on Render, trust the dashboard)
+if not os.getenv("RENDER"):
+    load_dotenv(override=False)
 
 # Diagnostic print on startup (viewable in Render logs)
 _key = os.getenv("OPENAI_API_KEY", "")
