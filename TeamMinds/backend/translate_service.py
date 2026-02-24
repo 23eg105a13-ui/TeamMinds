@@ -16,7 +16,7 @@ async def translate_code(request: TranslationRequest):
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY not set")
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     
     prompt = f"""
     Translate the following code from {request.from_lang} to {request.to_lang}.

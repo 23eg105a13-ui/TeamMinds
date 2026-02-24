@@ -51,7 +51,7 @@ async def analyze_github(request: GitHubRequest):
         
         # LLM Analysis
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash-latest")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         prompt = f"""
         Analyze this GitHub repository: {request.repo_url}

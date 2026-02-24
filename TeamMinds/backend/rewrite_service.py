@@ -15,7 +15,7 @@ async def rewrite_code(request: CodeRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY environment variable not set.")
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     
     prompt = f"""
     Rewrite and optimize the following {request.language} code.
