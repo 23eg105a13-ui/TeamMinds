@@ -37,11 +37,11 @@ const ComparisonPage = () => {
         setLoading(true);
         try {
             // First, get a rewrite
-            const rewriteRes = await axios.post(`${API_BASE}/rewrite/`, { code: originalCode, language });
+            const rewriteRes = await axios.post(`${API_BASE}/rewrite`, { code: originalCode, language });
             setRewrittenCode(rewriteRes.data.rewritten_code);
 
             // Also get metadata (challenges/metrics) from review
-            const reviewRes = await axios.post(`${API_BASE}/review/`, { code: originalCode, language });
+            const reviewRes = await axios.post(`${API_BASE}/review`, { code: originalCode, language });
             setMetrics({
                 security: `+${(reviewRes.data.security_score * 100).toFixed(0)}%`,
                 performance: `+${(reviewRes.data.performance_score * 100).toFixed(0)}%`,
@@ -59,7 +59,7 @@ const ComparisonPage = () => {
     const handleValidate = async () => {
         setValidating(true);
         try {
-            const res = await axios.post(`${API_BASE}/validation/`, {
+            const res = await axios.post(`${API_BASE}/validation`, {
                 code: originalCode,
                 language
             });
