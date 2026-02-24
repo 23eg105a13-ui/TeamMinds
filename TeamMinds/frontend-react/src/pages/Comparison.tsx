@@ -10,7 +10,7 @@ import { Button, GlassCard } from '../components/ui/Core';
 import CodeEditor from '../components/CodeEditor';
 import { ValidationResult, Severity } from '../types/index';
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = "/api";
 
 const ComparisonPage = () => {
     const [searchParams] = useSearchParams();

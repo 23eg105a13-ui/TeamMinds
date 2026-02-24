@@ -4,7 +4,7 @@ import { Github, Search, AlertTriangle, Shield, CheckCircle, ExternalLink, Refre
 import { Button, GlassCard } from '../components/ui/Core';
 import axios from 'axios';
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = (import.meta as any).env?.VITE_API_URL || "/api";
 
 const GitHubAnalyzer = () => {
     const [url, setUrl] = useState('');

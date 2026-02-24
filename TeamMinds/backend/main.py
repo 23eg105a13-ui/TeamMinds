@@ -7,9 +7,11 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Load environment variables (only in local development)
-if not os.getenv("RENDER"):
-    load_dotenv()
+# Load environment variables (only if not on Render)
+if not os.getenv("RENDER") and os.path.exists("backend/.env"):
+    load_dotenv("backend/.env")
+elif not os.getenv("RENDER") and os.path.exists(".env"):
+    load_dotenv(".env")
 
 # Check for API Key
 if not os.getenv("OPENAI_API_KEY"):
@@ -37,7 +39,9 @@ app.add_middleware(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Root route handled by SPA catch-all at the bottom
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok", "api_key_set": bool(os.getenv("OPENAI_API_KEY"))}
 
 # Services
 from review_service import review_router
