@@ -58,7 +58,7 @@ const Dashboard = () => {
         setTranslating(true);
         addLog(`Translating logic to ${language}...`, 'info');
         try {
-            const res = await axios.post(`${API_BASE}/translate/`, {
+            const res = await axios.post(`${API_BASE}/translate`, {
                 code,
                 from_lang: "auto",
                 to_lang: language
@@ -78,7 +78,7 @@ const Dashboard = () => {
         setLoading(true);
         addLog(`Analyzing ${language} code...`, 'info');
         try {
-            const res = await axios.post(`${API_BASE}/review/`, { code, language });
+            const res = await axios.post(`${API_BASE}/review`, { code, language });
             setResults(res.data);
             addLog("AI Review completed. Found issues mapped to severity.", 'success');
         } catch (err: any) {
@@ -92,7 +92,7 @@ const Dashboard = () => {
         addLog("> Starting execution process...", 'info');
         try {
             // Use 127.0.0.1 for more reliability in some environments
-            const res = await axios.post(`${API_BASE}/execute/`, { code, language });
+            const res = await axios.post(`${API_BASE}/execute`, { code, language });
             if (res.data.output) addLog(res.data.output, 'default');
             if (res.data.error) addLog(res.data.error, 'error');
             addLog(`Exited with status: ${res.data.status}`, res.data.status === 'success' ? 'success' : 'error');
