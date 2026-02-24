@@ -7,15 +7,14 @@ import logging
 import os
 from dotenv import load_dotenv
 
-# Load environment variables only if not already set (Dashboard takes priority)
-if not os.getenv("OPENAI_API_KEY"):
-    load_dotenv()
-    # Try backup paths if default load_dotenv fails
-    if not os.getenv("OPENAI_API_KEY"):
-        if os.path.exists(".env"):
-            load_dotenv(".env")
-        elif os.path.exists("backend/.env"):
-            load_dotenv("backend/.env")
+# Load environment variables (override=False ensures Dashboard always wins)
+# We only load .env for local development where variables aren't set in a dashboard
+load_dotenv(override=False)
+
+# Diagnostic print on startup (viewable in Render logs)
+_key = os.getenv("OPENAI_API_KEY", "")
+_masked = f"{_key[:7]}...{_key[-4:]}" if len(_key) > 10 else "NOT_SET"
+print(f"DEBUG: Active OpenAI Key Suffix: {_masked}")
 
 # Check for API Key
 if not os.getenv("OPENAI_API_KEY"):
