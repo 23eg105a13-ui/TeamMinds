@@ -36,9 +36,7 @@ app.add_middleware(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to CodeWorks 3.0 API"}
+# Root route handled by SPA catch-all at the bottom
 
 # Services
 from review_service import review_router
@@ -50,6 +48,9 @@ from history_service import history_router
 from validation_service import validation_router
 from translate_service import translate_router
 
+from fastapi.staticfiles import StaticFiles
+
+# ... existing routers ...
 app.include_router(review_router, prefix="/api/review", tags=["Review"])
 app.include_router(rewrite_router, prefix="/api/rewrite", tags=["Rewrite"])
 app.include_router(test_router, prefix="/api/test", tags=["Tests"])
@@ -58,6 +59,22 @@ app.include_router(github_router, prefix="/api/github", tags=["GitHub"])
 app.include_router(history_router, prefix="/api/history", tags=["History"])
 app.include_router(validation_router, prefix="/api/validation", tags=["Validation"])
 app.include_router(translate_router, prefix="/api/translate", tags=["Translate"])
+
+from fastapi.responses import FileResponse
+
+# Serve frontend static files
+# This assumes the frontend build (dist) folder is copied into backend/static
+if os.path.exists("static"):
+    app.mount("/assets", StaticFiles(directory="static/assets"), name="assets")
+    
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # If the request matches a real file in static, serve it
+        file_path = os.path.join("static", full_path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        # Otherwise serve index.html for React Router
+        return FileResponse("static/index.html")
 
 if __name__ == "__main__":
     import uvicorn

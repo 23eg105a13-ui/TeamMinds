@@ -11,7 +11,8 @@ import CodeEditor from '../components/CodeEditor';
 import Terminal, { LogEntry } from '../components/Terminal';
 import { ReviewResponse, Severity } from '../types/index';
 
-const API_BASE = "http://localhost:8000/api"; // Improved local connectivity
+// Use relative path for single-origin deployment, or environment variable for flexibility
+const API_BASE = (import.meta as any).env?.VITE_API_URL || "/api";
 
 const LANGUAGE_TEMPLATES: Record<string, string> = {
     python: "def main():\n    print('Hello, CodeWorks!')\n\nif __name__ == '__main__':\n    main()",
