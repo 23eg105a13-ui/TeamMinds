@@ -11,7 +11,7 @@ async def generate_tests(request: CodeRequest):
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY not set")
     
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-1.5-flash-latest")
     
     prompt = f"""
     Generate 5 comprehensive unit tests for the following {request.language} code.
